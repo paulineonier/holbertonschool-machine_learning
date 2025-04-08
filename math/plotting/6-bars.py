@@ -29,18 +29,18 @@ def bars():
     bar_width = 0.5
 
     # Plot stacked bars
-    plt.bar(people, apples, bar_width, color='red', label='Apples')
+    plt.bar(people, apples, bar_width, color='red', label='apples')
     plt.bar(
         people, bananas, bar_width, bottom=apples, color='yellow',
-        label='Bananas'
+        label='bananas'
     )
     plt.bar(
         people, oranges, bar_width, bottom=apples + bananas, color='#ff8000',
-        label='Oranges'
+        label='oranges'
     )
     plt.bar(
         people, peaches, bar_width, bottom=apples + bananas + oranges,
-        color='#ffe5b4', label='Peaches'
+        color='#ffe5b4', label='peaches'
     )
 
     # Configure the graph
