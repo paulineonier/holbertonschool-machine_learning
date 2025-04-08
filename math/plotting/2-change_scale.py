@@ -25,4 +25,5 @@ def change_scale():
     plt.title('Exponential Decay of C-14')  # Title of the graph
     plt.yscale('log')  # Set the y-axis to a logarithmic scale
     plt.xlim(0, 28650)  # Ensure the x-axis goes from 0 to 28650
+    plt.ylim(0.0001, 1)
     plt.show()  # Display the plot
