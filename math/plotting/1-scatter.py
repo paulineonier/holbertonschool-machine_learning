@@ -17,6 +17,9 @@ def scatter():
     plt.scatter(x, y, c='m', marker='.')  # 'm' for magenta points
     plt.xlabel('Height (in)')            # axis x
     plt.ylabel('Weight (lbs)')           # axis y
-    plt.title("Men's Height vs Weight")  # Title of the plot
+    plt.title("Men’s Height vs Weight")  # Title of the plot
     plt.grid(True)                       # Add grid
     plt.show()                           # Display the graphic
+
+
+scatter()
