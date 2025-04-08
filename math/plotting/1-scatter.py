@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
+"""
+This module defines the function scatter, which plots a scatter plot
+of men's height vs weight with magenta points.
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 def scatter():
     """
@@ -12,13 +18,13 @@ def scatter():
     x, y = np.random.multivariate_normal(mean, cov, 2000).T
     y += 180
 
-    plt.figure(figsize=(6.4, 4.8))
-    plt.scatter(x, y, c='m', marker='.')
-    plt.xlabel('Height (in)')
-    plt.ylabel('Weight (lbs)')
-    plt.title("Men’s Height vs Weight")
-    plt.grid(True)
-    plt.show()
+    plt.figure(figsize=(6.4, 4.8))  # Ensure the figure size is correct
+    plt.scatter(x, y, c='m')  # Magenta points without additional marker specification
+    plt.xlabel('Height (in)')  # Label for x-axis
+    plt.ylabel('Weight (lbs)')  # Label for y-axis
+    plt.title("Men's Height vs Weight")  # Title of the plot (ensure correct apostrophe)
+    plt.grid(True)  # Display the grid
+    plt.show()  # Display the plot
 
 
 scatter()
