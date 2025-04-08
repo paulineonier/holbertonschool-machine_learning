@@ -48,6 +48,6 @@ def bars():
     plt.title('Number of Fruit per Person')  # Title of the graph
     plt.ylim(0, 80)  # Set y-axis range from 0 to 80
     plt.yticks(range(0, 81, 10))  # Set ticks every 10 units
+    plt.xticks(range(len(people)), people)  # Ensure x-axis labels match people
     plt.legend()  # Display the legend
-    plt.grid(axis='y', linestyle='--')  # Add horizontal grid lines
     plt.show()  # Display the graph
