@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-This module contains the function to plot the exponential decay of two 
-radioactive elements: C-14 and Ra-226. The plot displays how the fraction 
+This module contains the function to plot the exponential decay of two
+radioactive elements: C-14 and Ra-226. The plot displays how the fraction
 remaining of each element decreases over time.
 """
 
