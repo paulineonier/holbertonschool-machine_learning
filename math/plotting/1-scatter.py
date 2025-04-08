@@ -19,11 +19,10 @@ def scatter():
     y += 180
 
     plt.figure(figsize=(6.4, 4.8))  # Ensure the figure size is correct
-    plt.scatter(x, y, c='m')  # Magenta points without additional marker specification
+    plt.scatter(x, y, c='magenta')  # Magenta points without additional marker specification
     plt.xlabel('Height (in)')  # Label for x-axis
     plt.ylabel('Weight (lbs)')  # Label for y-axis
     plt.title("Men's Height vs Weight")  # Title of the plot (ensure correct apostrophe)
-    plt.grid(True)  # Display the grid
     plt.show()  # Display the plot
 
 
