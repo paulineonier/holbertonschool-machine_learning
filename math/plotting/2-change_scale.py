@@ -13,7 +13,7 @@ def change_scale():
     Plots the exponential decay of C-14 with a logarithmic scale on the y-axis.
     X-axis represents time in years and y-axis represents fraction remaining.
     """
-    x = np.linspace(0, 28650, 1000)  # Time points in years
+    x = np.arange(0, 28651, 5730)  # Time points in years, spaced by half-life
     r = np.log(0.5)  # Decay constant (logarithm of 0.5)
     t = 5730  # Half-life of C-14 in years
     y = np.exp((r / t) * x)  # Exponential decay formula
@@ -25,7 +25,5 @@ def change_scale():
     plt.title('Exponential Decay of C-14')  # Title of the graph
     plt.yscale('log')  # Set the y-axis to a logarithmic scale
     plt.xlim(0, 28650)  # Ensure the x-axis goes from 0 to 28650
-    plt.ylim(0.0001, 1)
-    plt.grid(True)
-    plt.legend()
+
     plt.show()  # Display the plot
