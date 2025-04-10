@@ -1,3 +1,5 @@
+#!/usr/bin/env
+
 """
 Module : summation
 Module contient une fonction qui calcule la somme des carrés de tous les
