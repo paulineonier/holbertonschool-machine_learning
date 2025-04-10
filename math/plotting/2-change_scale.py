@@ -26,4 +26,6 @@ def change_scale():
     plt.yscale('log')  # Set the y-axis to a logarithmic scale
     plt.xlim(0, 28650)  # Ensure the x-axis goes from 0 to 28650
     plt.ylim(0.0001, 1)
+    plt.grid(True)
+    plt.legend()
     plt.show()  # Display the plot
