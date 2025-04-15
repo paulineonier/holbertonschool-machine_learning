@@ -2,7 +2,7 @@
 
 """
 Module : summation
-Module contient une fonction qui calcule la somme des carrés de tous les
+Ce module contient une fonction qui calcule la somme des carrés de tous les
 entiers de 1 à n.
 """
 
@@ -22,7 +22,7 @@ def summation_i_squared(n):
         somme des carrés = (n * (n + 1) * (2n + 1)) // 6
     """
     # Vérification de l'entrée
-    if n is None or n < 0:
+    if not isinstance(n, int) or n < 0:
         return None
 
     # Calcul avec la formule mathématique
