@@ -6,6 +6,7 @@ This module provides utility functions for working with polynomials,
 including differentiation.
 """
 
+
 def poly_derivative(poly):
     """
     Calcule dérivée d'un polynôme représenté par liste de coefficients.
