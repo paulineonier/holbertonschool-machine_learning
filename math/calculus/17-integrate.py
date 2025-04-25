@@ -35,7 +35,7 @@ def poly_integral(poly, C=0):
             coeff = int(coeff)
         integral.append(coeff)
 
-    while integral[-1] == 0:
+    while len(integral) > 1 and integral[-1] == 0:
         integral.pop()
 
     return integral
