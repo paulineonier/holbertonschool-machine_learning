@@ -27,6 +27,8 @@ def poly_integral(poly, C=0):
         return None
     if not isinstance(C, (int, float)):
         return None
+    if not poly or all(x == 0 for x in poly):
+        return None
 
     integral = [C]
     for i in range(len(poly)):
