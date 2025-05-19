@@ -7,7 +7,6 @@ computation of the maximum depth of a decision tree.
 
 import numpy as np
 
-
 class Node:
     """
     Represents an internal node in a decision tree.
@@ -78,7 +77,7 @@ class Decision_Tree:
 
     Attributes:
         max_depth (int): Maximum allowed depth of the tree.
-        min_pop (int): Minimum population required to split.
+        min_pop (int): Minimum population (number of samples) required to split.
         seed (int): Random seed for reproducibility.
         split_criterion (str): Splitting strategy ("random", etc.).
         root (Node): Root node of the tree.
@@ -86,7 +85,7 @@ class Decision_Tree:
         target (np.ndarray): Placeholder for target values.
         predict (callable): Prediction function (to be implemented).
     """
-    def __init__(self, max_depth=10, min_pop=1, seed=0, 
+    def __init__(self, max_depth=10, min_pop=1, seed=0, split_criterion="random", root=None):
         self.rng = np.random.default_rng(seed)
         if root:
             self.root = root
