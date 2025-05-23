@@ -3,16 +3,19 @@ import numpy as np
 
 class Node:
     """
-    Represents a decision node in a decision tree.
+    A class representing a decision node in a binary decision tree.
 
     Attributes:
-        feature (int): Feature index on which the node splits.
+        feature (int): Index of the feature to split on.
         threshold (float): Threshold value for the split.
-        left_child (Node or Leaf): Left subtree.
-        right_child (Node or Leaf): Right subtree.
-        depth (int): Depth of the node in the tree.
-        is_root (bool): True if the node is the root of the tree.
-        is_leaf (bool): False for Node objects.
+        left_child (Node or Leaf): Left child node or leaf.
+        right_child (Node or Leaf): Right child node or leaf.
+        depth (int): Depth of this node in the tree.
+        is_root (bool): Whether this node is the root of the tree.
+        is_leaf (bool): Always False for Node.
+        lower (dict): Lower bounds for each feature (set during bounds computation).
+        upper (dict): Upper bounds for each feature (set during bounds computation).
+        indicator (function): A lambda function returning a boolean mask over data rows.
     """
     def __init__(self, feature, threshold, left_child, right_child, depth, is_root=False):
         self.feature = feature
@@ -25,7 +28,10 @@ class Node:
 
     def get_leaves_below(self):
         """
-        Recursively returns a list of all Leaf nodes below this Node.
+        Recursively collects all leaves in the subtree rooted at this node.
+
+        Returns:
+            list: A list of Leaf instances.
         """
         leaves = []
         for child in [self.left_child, self.right_child]:
@@ -34,7 +40,7 @@ class Node:
 
     def update_bounds_below(self):
         """
-        Computes lower and upper bounds for features and propagates them recursively to child nodes.
+        Recursively updates lower and upper bounds for each node or leaf below this node.
         """
         if self.is_root:
             self.lower = {self.feature: -np.inf}
@@ -53,8 +59,8 @@ class Node:
 
     def update_indicator(self):
         """
-        Builds a lambda function that, for a given 2D NumPy array x,
-        returns a boolean array indicating which samples fall under this node's conditions.
+        Creates a lambda function (self.indicator) that returns a boolean array indicating
+        whether each row of input data satisfies the bounds associated with this node.
         """
         def is_large_enough(x):
             return np.all(np.array([x[:, k] > self.lower[k] for k in self.lower]), axis=0)
@@ -67,12 +73,15 @@ class Node:
 
 class Leaf:
     """
-    Represents a terminal leaf node in the decision tree.
+    A class representing a leaf node in a binary decision tree.
 
     Attributes:
-        value (int): The predicted class or value at the leaf.
+        value (int or float): The prediction value associated with this leaf.
         depth (int): The depth of the leaf in the tree.
-        is_leaf (bool): Always True for Leaf instances.
+        is_leaf (bool): Always True for Leaf.
+        lower (dict): Lower bounds for each feature (set during bounds computation).
+        upper (dict): Upper bounds for each feature (set during bounds computation).
+        indicator (function): A lambda function returning a boolean mask over data rows.
     """
     def __init__(self, value, depth):
         self.value = value
@@ -84,19 +93,23 @@ class Leaf:
 
     def get_leaves_below(self):
         """
-        Returns itself in a list, since it is already a leaf.
+        Returns itself in a list since it is a leaf.
+
+        Returns:
+            list: A list containing only this leaf.
         """
         return [self]
 
     def update_bounds_below(self):
         """
-        Leaf has no children to propagate bounds to, so this is a no-op.
+        Does nothing for leaves as they have no children.
         """
         pass
 
     def update_indicator(self):
         """
-        Leaf does not define its own indicator logic — this is set during propagation from a Node.
+        Creates a lambda function (self.indicator) that returns a boolean array indicating
+        whether each row of input data satisfies the bounds associated with this leaf.
         """
         def is_large_enough(x):
             return np.all(np.array([x[:, k] > self.lower[k] for k in self.lower]), axis=0)
@@ -109,7 +122,7 @@ class Leaf:
 
 class Decision_Tree:
     """
-    Wrapper class representing a full decision tree.
+    A class representing a full binary decision tree.
 
     Attributes:
         root (Node): The root node of the tree.
@@ -119,12 +132,15 @@ class Decision_Tree:
 
     def get_leaves(self):
         """
-        Returns all leaf nodes in the tree.
+        Returns all leaves of the tree.
+
+        Returns:
+            list: A list of all Leaf instances in the tree.
         """
         return self.root.get_leaves_below()
 
     def update_bounds(self):
         """
-        Initiates recursive bounds computation from the root node.
+        Initiates recursive lower and upper bounds update from the root.
         """
         self.root.update_bounds_below()
