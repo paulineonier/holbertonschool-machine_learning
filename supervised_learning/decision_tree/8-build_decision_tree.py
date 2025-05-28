@@ -280,6 +280,9 @@ class Decision_Tree:
         return compute_depth(self.root)
 
     def count_nodes(self, only_leaves=False):
+        """
+        Count number of nodes
+        """
         def count(node):
             if isinstance(node, Leaf):
                 return 1 if only_leaves else 0
