@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 Isolation_Random_Tree = __import__('10-isolation_tree').Isolation_Random_Tree
 import numpy as np
 
