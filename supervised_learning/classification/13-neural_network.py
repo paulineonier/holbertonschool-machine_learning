@@ -109,19 +109,40 @@ class NeuralNetwork:
         """
         m = Y.shape[1]
 
-        # Calculate derivative for output layer
-        dZ2 = A2 - Y  # shape (1, m)
-        dW2 = (1 / m) * np.matmul(dZ2, A1.T)  # shape (1, nodes)
-        db2 = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)  # shape (1,1)
+        dZ2 = A2 - Y  # (1, m)
+        dW2 = (1 / m) * np.matmul(dZ2, A1.T)  # (1, nodes)
+        db2 = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)  # (1,1)
 
-        # Calculate derivative for hidden layer
         g1 = A1 * (1 - A1)  # sigmoid derivative
-        dZ1 = np.matmul(self.__W2.T, dZ2) * g1  # shape (nodes, m)
-        dW1 = (1 / m) * np.matmul(dZ1, X.T)  # shape (nodes, nx)
-        db1 = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)  # shape (nodes,1)
+        dZ1 = np.matmul(self.__W2.T, dZ2) * g1  # (nodes, m)
+        dW1 = (1 / m) * np.matmul(dZ1, X.T)  # (nodes, nx)
+        db1 = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)  # (nodes,1)
 
-        # Update weights and biases
         self.__W1 -= alpha * dW1
         self.__b1 -= alpha * db1
         self.__W2 -= alpha * dW2
         self.__b2 -= alpha * db2
+
+    def train(self, X, Y, iterations=1, alpha=0.05):
+        """
+        Trains the neural network WITHOUT loop: one forward prop + one gradient descent
+        X: numpy.ndarray with shape (nx, m)
+        Y: numpy.ndarray with shape (1, m)
+        iterations: must be 1 here, no loops allowed
+        alpha: learning rate
+        Returns: evaluation of training data after one update
+        """
+        if not isinstance(iterations, int):
+            raise TypeError("iterations must be an integer")
+        if iterations != 1:
+            raise ValueError("iterations must be 1 (no loop version)")
+
+        if not isinstance(alpha, float):
+            raise TypeError("alpha must be a float")
+        if alpha <= 0:
+            raise ValueError("alpha must be positive")
+
+        A1, A2 = self.forward_prop(X)
+        self.gradient_descent(X, Y, A1, A2, alpha)
+
+        return self.evaluate(X, Y)
