@@ -1,26 +1,50 @@
-# Fichier : 0-neuron.py
+#!/usr/bin/env python3
+"""
+This module defines the Neuron class, representing a single neuron
+performing binary classification.
+
+The Neuron class includes:
+- Initialization with input feature size (nx)
+- Weight vector initialized with a normal distribution
+- Bias initialized to zero
+- Activated output initialized to zero
+- Input validation on initialization parameters
+"""
 
 import numpy as np
 
+
 class Neuron:
-    """Classe qui définit un neurone pour la classification binaire."""
+    """Class that defines a single neuron performing binary classification."""
 
     def __init__(self, nx):
         """
-        nx : nombre de caractéristiques en entrée.
+        Initialize a Neuron instance.
+
+        Parameters
+        ----------
+        nx : int
+            The number of input features to the neuron.
+
+        Raises
+        ------
+        TypeError
+            If nx is not an integer.
+        ValueError
+            If nx is less than 1.
         """
-        # Étape 1 : Vérifications
+        # Step 1: Input validation
         if not isinstance(nx, int):
             raise TypeError("nx must be an integer")
         if nx < 1:
             raise ValueError("nx must be a positive integer")
 
-        # Étape 2 : Attributs publics
-        # Poids W : array de shape (1, nx), aléatoire selon une loi normale
+        # Step 2: Public attributes
+        # Weight vector W, initialized with a random normal distribution
         self.W = np.random.randn(1, nx)
 
-        # Biais b : initialisé à 0
+        # Bias b, initialized to 0
         self.b = 0
 
-        # Sortie activée A : initialisée à 0
+        # Activated output A, initialized to 0
         self.A = 0
