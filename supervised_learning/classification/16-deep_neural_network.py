@@ -1,19 +1,34 @@
 #!/usr/bin/env python3
-"""Defines a deep neural network performing binary classification"""
+"""
+Module that defines the DeepNeuralNetwork class
+"""
 
 import numpy as np
 
 
 class DeepNeuralNetwork:
-    """Defines a deep neural network for binary classification"""
+    """
+    Deep Neural Network performing binary classification
+    """
 
     def __init__(self, nx, layers):
         """
-        Constructor
+        Class constructor
 
-        Parameters:
-        - nx (int): number of input features
-        - layers (list): list of number of nodes per layer
+        Parameters
+        ----------
+        nx : int
+            Number of input features
+        layers : list
+            List representing the number of nodes in each layer
+
+        Raises
+        ------
+        TypeError
+            If nx is not an int
+            If layers is not a list of positive integers
+        ValueError
+            If nx is less than 1
         """
         if not isinstance(nx, int):
             raise TypeError("nx must be an integer")
@@ -30,23 +45,40 @@ class DeepNeuralNetwork:
 
         for i in range(self.__L):
             layer_input = nx if i == 0 else layers[i - 1]
-            self.__weights[f'W{i+1}'] = (
-                np.random.randn(layers[i], layer_input) *
-                np.sqrt(2 / layer_input)
+            self.__weights[f"W{i+1}"] = (
+                np.random.randn(layers[i], layer_input) * np.sqrt(2 / layer_input)
             )
-            self.__weights[f'b{i+1}'] = np.zeros((layers[i], 1))
+            self.__weights[f"b{i+1}"] = np.zeros((layers[i], 1))
 
     @property
     def L(self):
-        """Number of layers"""
+        """
+        Number of layers in the neural network
+
+        Returns
+        -------
+        int
+        """
         return self.__L
 
     @property
     def cache(self):
-        """Dictionary to store intermediary values"""
+        """
+        Dictionary holding all intermediary values of the network
+
+        Returns
+        -------
+        dict
+        """
         return self.__cache
 
     @property
     def weights(self):
-        """Dictionary to store weights and biases"""
+        """
+        Dictionary holding all weights and biases of the network
+
+        Returns
+        -------
+        dict
+        """
         return self.__weights
