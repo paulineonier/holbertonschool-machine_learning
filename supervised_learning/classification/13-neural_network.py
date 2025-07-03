@@ -125,7 +125,7 @@ class NeuralNetwork:
 
     def train(self, X, Y, iterations=1, alpha=0.05):
         """
-        Trains the neural network WITHOUT loop: one forward prop + one gradient descent
+        Trains neural network, no loop: one forward prop + one gradient descent
         X: numpy.ndarray with shape (nx, m)
         Y: numpy.ndarray with shape (1, m)
         iterations: must be 1 here, no loops allowed
