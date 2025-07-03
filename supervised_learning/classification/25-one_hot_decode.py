@@ -22,6 +22,12 @@ def one_hot_decode(one_hot):
     None
         On failure.
     """
+    if not isinstance(one_hot, np.ndarray):
+        return None
+    if one_hot.ndim != 2:
+        return None
+    if one_hot.shape[0] == 0 or one_hot.shape[1] == 0:
+        return None
     try:
         # The label is the index of the max value in each column
         labels = np.argmax(one_hot, axis=0)
