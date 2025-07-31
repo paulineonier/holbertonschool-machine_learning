@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Function that calculates the weighted moving average of a data set"""
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 
