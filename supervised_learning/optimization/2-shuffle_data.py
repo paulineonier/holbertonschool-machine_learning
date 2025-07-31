@@ -3,6 +3,7 @@
 
 import numpy as np
 
+
 def shuffle_data(X, Y):
     """
     Shuffles the data points in two matrices the same way.
@@ -15,7 +16,7 @@ def shuffle_data(X, Y):
         - ny is the number of features in Y
 
     Returns:
-    - Tuple of (X_shuffled, Y_shuffled), both numpy.ndarrays of the same shape as input
+    - Tuple (X_shuffled, Y_shuffled), both numpy.ndarrays same shape as input
     """
     m = X.shape[0]
     permutation = np.random.permutation(m)
