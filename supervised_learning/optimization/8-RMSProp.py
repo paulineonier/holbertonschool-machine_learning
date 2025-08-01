@@ -5,13 +5,14 @@ RMSProp Optimizer Setup for TensorFlow
 
 import tensorflow as tf
 
+
 def create_RMSProp_op(alpha, beta2, epsilon):
     """
     Creates the RMSProp optimizer
 
     Parameters:
     - alpha: learning rate
-    - beta2: RMSProp decay (discounting factor for the history of squared gradients)
+    - beta2: RMSProp decay(discounting factor for history of squared gradients)
     - epsilon: small constant to avoid division by zero
 
     Returns:
