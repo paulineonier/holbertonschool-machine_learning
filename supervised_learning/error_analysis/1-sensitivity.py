@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Module 1-sensitivity
-Computes per-class sensitivity (recall / true positive rate) from a confusion matrix.
+Computes per-class sensitivity(recall/true positive rate) from confusion matrix
 """
 
 import numpy as np
@@ -22,7 +22,7 @@ def sensitivity(confusion):
         sensitivity_i = TP_i / (TP_i + FN_i)
         where:
           - TP_i is the (i, i) entry of the confusion matrix,
-          - FN_i is the sum of row i except the diagonal (i.e., missed positives).
+          - FN_i is the sum of row i except diagonal (i.e., missed positives).
     """
     # True positives per class are on the diagonal
     TP = np.diag(confusion)
