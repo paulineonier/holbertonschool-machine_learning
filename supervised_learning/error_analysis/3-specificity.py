@@ -2,7 +2,7 @@
 """
 Module 3-specificity
 Contains the function specificity that calculates
-the per-class specificity (true negative rate) from confusion matrix.
+the per-class specificity (true negative rate) from a confusion matrix.
 """
 
 import numpy as np
@@ -22,27 +22,19 @@ def specificity(confusion):
             Specificity of each class i:
                 specificity_i = TN_i / (TN_i + FP_i)
             where:
-                TN_i = sum of all elements not in row i or column i
-                FP_i = sum of column i excluding the diagonal
+                TN_i = all samples that are not in row i or column i
+                FP_i = sum of column i excluding TP_i
     """
     classes = confusion.shape[0]
-    total = np.sum(confusion)  # Total number of examples
-    TN = np.zeros(classes)     # True negatives for each class
+    total = np.sum(confusion)
+    spec = np.zeros(classes)
 
     for i in range(classes):
         TP = confusion[i, i]
         FP = np.sum(confusion[:, i]) - TP
         FN = np.sum(confusion[i, :]) - TP
-        # True negatives = all other entries not in row i or column i
-        TN[i] = total - (TP + FP + FN)
+        TN = total - (TP + FP + FN)
 
-    # Specificity = TN / (TN + FP)
-    with np.errstate(divide='ignore', invalid='ignore'):
-        specificity = np.divide(
-            TN,
-            TN + FP,
-            out=np.zeros_like(TN, dtype=float),
-            where=(TN + FP) != 0
-        )
+        spec[i] = TN / (TN + FP)
 
-    return specificity
+    return spec
