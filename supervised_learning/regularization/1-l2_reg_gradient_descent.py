@@ -47,10 +47,10 @@ def l2_reg_gradient_descent(Y, weights, cache, alpha, lambtha, L):
         db = np.sum(dZ, axis=1, keepdims=True) / m
 
         # Update parameters
-        weights['W' + str(l)] = W - alpha * dW
-        weights['b' + str(l)] = b - alpha * db
+        weights['W' + str(layer)] = W - alpha * dW
+        weights['b' + str(layer)] = b - alpha * db
 
-        if l > 1:
+        if layer > 1:
             # Backprop through tanh activation
             dA_prev = np.matmul(W.T, dZ)
             dZ = dA_prev * (1 - np.square(A_prev))
