@@ -38,9 +38,9 @@ def l2_reg_gradient_descent(Y, weights, cache, alpha, lambtha, L):
     dZ = cache['A' + str(L)] - Y
 
     for layer in reversed(range(1, L + 1)):
-        A_prev = cache['A' + str(l - 1)]
-        W = weights['W' + str(l)]
-        b = weights['b' + str(l)]
+        A_prev = cache['A' + str(layer - 1)]
+        W = weights['W' + str(layer)]
+        b = weights['b' + str(layer)]
 
         # Compute gradients with L2 regularization
         dW = (np.matmul(dZ, A_prev.T) / m) + (lambtha / m) * W
