@@ -47,7 +47,7 @@ def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
         weights["W" + str(layer)] = W - alpha * dW
         weights["b" + str(layer)] = weights["b" + str(layer)] - alpha * db
 
-        if l > 1:
+        if layer > 1:
             # Backprop dZ for hidden layers (tanh)
             dA_prev = np.matmul(W.T, dZ)
 
