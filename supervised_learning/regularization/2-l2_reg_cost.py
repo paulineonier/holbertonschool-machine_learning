@@ -24,10 +24,21 @@ def l2_reg_cost(cost, model):
                                 L2 regularization.
 
     Returns:
-        tf.Tensor: A 1D tensor containing the total cost for each
-                   layer of the network, accounting for L2
-                   regularization.
+        tf.Tensor: A tensor containing the total cost for each layer
+                   of the network, accounting for L2 regularization.
     """
-    reg_losses = tf.convert_to_tensor(model.losses)
-    total_costs = cost + reg_losses
-    return total_costs
+    # Liste des coûts de régularisation (un par couche)
+    reg_losses = model.losses
+
+    # On crée une liste où chaque élément = cost + perte L2 (0.0 si pas de régul)
+    per_layer_costs = [
+        cost + loss for loss in reg_losses
+    ]
+
+    # S’assurer que toutes les couches sont comptées
+    # (y compris celles sans régularisation -> ajout 0.0)
+    if len(per_layer_costs) < len(model.layers):
+        per_layer_costs.extend([cost + 0.0] * (len(model.layers) - len(per_layer_costs)))
+
+    # Retourne un tenseur contenant tous les coûts
+    return tf.convert_to_tensor(per_layer_costs)
