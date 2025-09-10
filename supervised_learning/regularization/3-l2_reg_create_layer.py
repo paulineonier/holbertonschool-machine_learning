@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Defines a function to create a layer with L2 regularization
+3-l2_reg_create_layer.py
+Defines a function to create a layer with L2 regularization in TensorFlow 2.x
 """
 
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 
 def l2_reg_create_layer(prev, n, activation, lambtha):
@@ -19,22 +20,22 @@ def l2_reg_create_layer(prev, n, activation, lambtha):
     Returns:
         Tensor output of the layer
     """
-    # L2 regularizer
-    l2_reg = tf.keras.regularizers.L2(lambtha)
+    # Define L2 regularizer with parameter lambtha
+    l2_reg = tf.keras.regularizers.L2(l2=lambtha)
 
-    # He et al. initialization (variance scaling initializer)
+    # Use He initialization (VarianceScaling) for better convergence
     initializer = tf.keras.initializers.VarianceScaling(
         scale=2.0,
         mode='fan_avg'
     )
 
-    # Dense layer with L2 regularization
-    layer = tf.layers.Dense(
+    # Create a Dense layer with L2 regularization
+    layer = tf.keras.layers.Dense(
         units=n,
         activation=activation,
         kernel_initializer=initializer,
-        kernel_regularizer=l2_reg,
-        name="layer"
+        kernel_regularizer=l2_reg
     )
 
+    # Apply the layer to the previous output
     return layer(prev)
