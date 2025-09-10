@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 6-dropout_create_layer.py
-Creates a layer of a neural network with Dropout regul' in TensorFlow 2.x
+Creates a layer of a neural network with Dropout regularization.
 """
 
 import tensorflow as tf
@@ -9,39 +9,35 @@ import tensorflow as tf
 
 def dropout_create_layer(prev, n, activation, keep_prob, training=True):
     """
-    Creates a neural network layer using Dropout.
+    Creates a new layer with dropout.
 
     Args:
-        prev: tensor, output of the previous layer
-        n (int): number of nodes for the new layer
-        activation: activation function for the layer
-        keep_prob (float): probability that a node will be kept
-        training (bool): whether the model is in training mode
+        prev (tensor): input tensor from the previous layer
+        n (int): number of nodes in the new layer
+        activation (function): activation function
+        keep_prob (float): probability to keep a node active
+        training (bool): True if the model is in training mode
 
     Returns:
-        Tuple of (output tensor, dropout mask tensor)
+        tensor: output of the new layer
+        tensor: dropout mask applied
     """
-    # He initialization for better convergence
-    initializer = tf.keras.initializers.VarianceScaling(
-        scale=2.0,
-        mode='fan_avg'
+    # Initialize weights using He initialization (shortened)
+    W = tf.Variable(
+        tf.keras.initializers.VarianceScaling(scale=2.0, mode='fan_avg')(
+            shape=(prev.shape[-1], n)
+        ), dtype=tf.float32
     )
+    b = tf.Variable(tf.zeros([n]), dtype=tf.float32)
 
-    # Fully connected dense layer
-    layer = tf.keras.layers.Dense(
-        units=n,
-        activation=activation,
-        kernel_initializer=initializer
-    )
+    # Linear combination and activation
+    A = activation(tf.matmul(prev, W) + b)
 
-    # Apply the layer to the previous output
-    A = layer(prev)
-
-    # Apply Dropout only in training mode
-    if training and keep_prob < 1.0:
-        # dropout layer in TF2 returns the scaled output
-        D = tf.nn.dropout(A, rate=1 - keep_prob)
+    # Apply dropout only during training
+    if training:
+        A = tf.nn.dropout(A, rate=1-keep_prob)
+        D = tf.cast(A != 0, tf.float32)
     else:
-        D = A
+        D = tf.ones_like(A)
 
-    return D, D  # Return output and mask (for compatibility)
+    return A, D
