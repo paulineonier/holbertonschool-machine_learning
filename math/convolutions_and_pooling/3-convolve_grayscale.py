@@ -15,7 +15,7 @@ def convolve_grayscale(images, kernel, padding='same', stride=(1, 1)):
     images : numpy.ndarray
         Array of shape (m, h, w) containing multiple grayscale images.
     kernel : numpy.ndarray
-        Array of shape (kh, kw) containing the kernel for convolution.
+        Array of shape (kh, kw) containing the kernel for the convolution.
     padding : tuple or str
         Either a tuple of (ph, pw), 'same', or 'valid'.
     stride : tuple
@@ -32,22 +32,25 @@ def convolve_grayscale(images, kernel, padding='same', stride=(1, 1)):
 
     # Determine padding amounts
     if isinstance(padding, tuple):
-        ph_top, pw_left = padding
-        ph_bottom, pw_right = ph_top, pw_left
+        ph, pw = padding
+        pad_top, pad_bottom = ph, ph
+        pad_left, pad_right = pw, pw
     elif padding == 'same':
-        ph_total = max((h - 1) * sh + kh - h, 0)
-        pw_total = max((w - 1) * sw + kw - w, 0)
-        ph_top = ph_total // 2
-        ph_bottom = ph_total - ph_top
-        pw_left = pw_total // 2
-        pw_right = pw_total - pw_left
+        out_h = int(np.ceil(h / sh))
+        out_w = int(np.ceil(w / sw))
+        pad_h = max((out_h - 1) * sh + kh - h, 0)
+        pad_w = max((out_w - 1) * sw + kw - w, 0)
+        pad_top = pad_h // 2
+        pad_bottom = pad_h - pad_top
+        pad_left = pad_w // 2
+        pad_right = pad_w - pad_left
     else:  # 'valid'
-        ph_top = ph_bottom = pw_left = pw_right = 0
+        pad_top = pad_bottom = pad_left = pad_right = 0
 
     # Pad images
     padded_images = np.pad(
         images,
-        ((0, 0), (ph_top, ph_bottom), (pw_left, pw_right)),
+        ((0, 0), (pad_top, pad_bottom), (pad_left, pad_right)),
         mode='constant',
         constant_values=0
     )
@@ -59,10 +62,12 @@ def convolve_grayscale(images, kernel, padding='same', stride=(1, 1)):
     # Initialize output array
     conv_output = np.zeros((m, new_h, new_w), dtype=np.float64)
 
-    # Perform convolution with only two loops
+    # Perform convolution (two loops only)
     for i in range(new_h):
         for j in range(new_w):
-            region = padded_images[:, i * sh:i * sh + kh, j * sw:j * sw + kw]
+            region = padded_images[
+                :, i * sh:i * sh + kh, j * sw:j * sw + kw
+            ]
             conv_output[:, i, j] = np.sum(region * kernel, axis=(1, 2))
 
     return conv_output
