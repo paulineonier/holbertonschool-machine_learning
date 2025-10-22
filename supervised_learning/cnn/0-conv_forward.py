@@ -8,7 +8,7 @@ import numpy as np
 
 def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
     """
-    Performs forward propagation over a convolutional layer of a neural network.
+    Performs forward propagation over convolutional layer of a neural network.
 
     Parameters
     ----------
@@ -64,7 +64,8 @@ def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
             horiz_start = j * sw
             horiz_end = horiz_start + kw
 
-            region = A_prev_padded[:, vert_start:vert_end, horiz_start:horiz_end, :]
+            region = A_prev_padded[:, vert_start:vert_end,
+                                   horiz_start:horiz_end, :]
 
             for c in range(c_new):
                 kernel = W[:, :, :, c]
