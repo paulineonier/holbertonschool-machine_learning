@@ -13,7 +13,7 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
     Parameters
     ----------
     dZ : numpy.ndarray
-        (m, h_new, w_new, c_new) - partial derivatives w.r.t. unactivated output
+        (m, h_new, w_new, c_new) - partial derivatives w.r.t.
     A_prev : numpy.ndarray
         (m, h_prev, w_prev, c_prev) - output of the previous layer
     W : numpy.ndarray
