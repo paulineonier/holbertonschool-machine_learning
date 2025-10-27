@@ -4,7 +4,6 @@ Builds an inception block as described in
 'Going Deeper with Convolutions' (Szegedy et al., 2014)
 """
 
-import tensorflow as tf
 from tensorflow import keras as K
 
 
