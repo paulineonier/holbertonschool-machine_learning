@@ -3,7 +3,6 @@
 Builds a modified LeNet-5 architecture using Keras.
 """
 
-import tensorflow as tf
 from tensorflow import keras as K
 
 
