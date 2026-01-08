@@ -3,8 +3,6 @@
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.applications import VGG19
-from tensorflow.keras.models import Model
 
 
 class NST:
@@ -108,7 +106,8 @@ class NST:
             style_layers followed by content_layer.
         """
         # Charger VGG19 pré-entraîné sur ImageNet
-        vgg = VGG19(include_top=False, weights='imagenet')
+        vgg = tf.keras.applications.VGG19(include_top=False,
+                                          weights='imagenet')
         vgg.trainable = False  # On ne veut pas entraîner le modèle
 
         # Obtenir les sorties pour les couches de style et contenu
@@ -118,5 +117,6 @@ class NST:
         outputs = style_outputs + [content_output]
 
         # Créer le modèle
-        model = Model(inputs=vgg.input, outputs=outputs)
+        model = tf.keras.Model(inputs=vgg.input,
+                               outputs=outputs)
         return model
