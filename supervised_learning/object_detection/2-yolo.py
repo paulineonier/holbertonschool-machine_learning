@@ -21,11 +21,11 @@ class Yolo:
         """
         # Load Keras model
         self.model = tf.keras.models.load_model(model_path, compile=False)
-        
+
         # Load class names
         with open(classes_path, "r") as f:
             self.class_names = [line.strip() for line in f.readlines()]
-        
+
         self.class_t = class_t
         self.nms_t = nms_t
         self.anchors = anchors
@@ -35,7 +35,7 @@ class Yolo:
         Process Darknet model outputs
 
         outputs: list of numpy.ndarrays from Darknet model for a single image
-        image_size: numpy.ndarray containing original image size [height, width]
+        image_size: numpy.ndarray contain original image size [height, width]
 
         Returns: (boxes, box_confidences, box_class_probs)
         """
@@ -94,9 +94,9 @@ class Yolo:
         """
         Filters YOLO boxes based on object and class confidence
 
-        boxes: list of numpy.ndarrays of shape (grid_h, grid_w, anchor_boxes, 4)
-        box_confidences: list of numpy.ndarrays of shape (grid_h, grid_w, anchor_boxes, 1)
-        box_class_probs: list of numpy.ndarrays of shape (grid_h, grid_w, anchor_boxes, classes)
+        boxes: list numpy.ndarrays of shape (grid_h, grid_w, anchor_boxes, 4)
+        box_confidences:list shape (grid_h, grid_w, anchor_boxes, 1)
+        box_class_probs:list shape (grid_h, grid_w, anchor_boxes, classes)
 
         Returns: (filtered_boxes, box_classes, box_scores)
         """
@@ -104,13 +104,14 @@ class Yolo:
         box_classes = []
         box_scores = []
 
-        for box, conf, class_prob in zip(boxes, box_confidences, box_class_probs):
+        for box, conf, class_prob in zip(boxes,
+                                         box_confidences, box_class_probs):
             # Compute box scores: confidence * class probabilities
-            scores = conf * class_prob  # shape: (grid_h, grid_w, anchors, classes)
+            scores = conf * class_prob
 
             # Find the class with the maximum score for each box
-            class_ids = np.argmax(scores, axis=-1)  # shape: (grid_h, grid_w, anchors)
-            class_scores = np.max(scores, axis=-1)  # shape: (grid_h, grid_w, anchors)
+            class_ids = np.argmax(scores, axis=-1)
+            class_scores = np.max(scores, axis=-1)
 
             # Apply threshold
             mask = class_scores >= self.class_t

@@ -24,11 +24,11 @@ class Yolo:
         """
         # Load Keras model
         self.model = tf.keras.models.load_model(model_path, compile=False)
-        
+
         # Load class names
         with open(classes_path, "r") as f:
             self.class_names = [line.strip() for line in f.readlines()]
-        
+
         self.class_t = class_t
         self.nms_t = nms_t
         self.anchors = anchors
@@ -92,7 +92,8 @@ class Yolo:
         box_classes = []
         box_scores = []
 
-        for box, conf, class_prob in zip(boxes, box_confidences, box_class_probs):
+        for box, conf, class_prob in zip(boxes,
+                                         box_confidences, box_class_probs):
             scores = conf * class_prob
             class_ids = np.argmax(scores, axis=-1)
             class_scores = np.max(scores, axis=-1)

@@ -22,11 +22,11 @@ class Yolo:
         """
         # Load Keras model
         self.model = tf.keras.models.load_model(model_path, compile=False)
-        
+
         # Load class names
         with open(classes_path, "r") as f:
             self.class_names = [line.strip() for line in f.readlines()]
-        
+
         self.class_t = class_t
         self.nms_t = nms_t
         self.anchors = anchors
@@ -36,7 +36,7 @@ class Yolo:
         Process Darknet model outputs
 
         outputs: list of numpy.ndarrays from Darknet model for a single image
-        image_size: numpy.ndarray containing original image size [height, width]
+        image_size: numpy.ndarray contain original image size [height, width]
 
         Returns: (boxes, box_confidences, box_class_probs)
         """
