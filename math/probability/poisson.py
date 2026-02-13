@@ -2,6 +2,7 @@
 """
 This module defines a Poisson class that represents a Poisson distribution.
 """
+import math
 
 
 class Poisson:
@@ -27,3 +28,18 @@ class Poisson:
                 raise ValueError("data must contain multiple values")
             # Estimate lambtha from data
             self.lambtha = float(sum(data) / len(data))
+
+    def pmf(self, k):
+        """Calculates the value of the PMF for a given number of successes
+
+        Args:
+            k (int or float): number of successes
+
+        Returns:
+            float: PMF value for k
+        """
+        k = int(k)
+        if k < 0:
+            return 0
+        # PMF formula: (e^-λ * λ^k) / k!
+        return (math.exp(-self.lambtha) * self.lambtha**k) / math.factorial(k)
