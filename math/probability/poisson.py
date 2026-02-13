@@ -2,7 +2,6 @@
 """
 This module defines a Poisson class that represents a Poisson distribution.
 """
-import math
 
 
 class Poisson:
