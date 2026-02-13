@@ -8,7 +8,12 @@ class Poisson:
     """Represents a Poisson distribution"""
 
     def __init__(self, data=None, lambtha=1.):
-        """Class constructor"""
+        """Class constructor
+
+        Args:
+            data (list): data to estimate the distribution
+            lambtha (float): expected number of occurrences
+        """
         if data is None:
             if lambtha <= 0:
                 raise ValueError("lambtha must be a positive value")
@@ -21,7 +26,7 @@ class Poisson:
             self.lambtha = float(sum(data) / len(data))
 
     def factorial(self, n):
-        """Calculates factorial without math module"""
+        """Calculates factorial without using math module"""
         if n == 0 or n == 1:
             return 1
         result = 1
@@ -30,10 +35,10 @@ class Poisson:
         return result
 
     def exp(self, x):
-        """Calculates e^x using Taylor series"""
+        """Calculates e^x using Taylor series with high precision"""
         term = 1.0
         sum_ = 1.0
-        for i in range(1, 20):  # 20 terms gives good approximation
+        for i in range(1, 100):  # 100 terms for higher precision
             term *= x / i
             sum_ += term
         return sum_
