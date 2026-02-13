@@ -38,7 +38,7 @@ class Poisson:
         """Calculates e^x using Taylor series with high precision"""
         term = 1.0
         sum_ = 1.0
-        for i in range(1, 100):  # 100 terms for higher precision
+        for i in range(1, 100):  # 100 terms for high precision
             term *= x / i
             sum_ += term
         return sum_
@@ -49,3 +49,13 @@ class Poisson:
         if k < 0:
             return 0
         return (self.exp(-self.lambtha) * self.lambtha**k) / self.factorial(k)
+
+    def cdf(self, k):
+        """Calculates the CDF for a given number of successes k"""
+        k = int(k)
+        if k < 0:
+            return 0
+        total = 0.0
+        for i in range(k + 1):
+            total += self.pmf(i)
+        return total
