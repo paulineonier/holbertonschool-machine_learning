@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Module qui définit une classe Normal pour représenter une distribution normale"""
+"""Module définit une classe Normal représente une distrib normale"""
 
 
 class Normal:
@@ -44,4 +44,3 @@ class Normal:
 
             # Calcul de l'écart-type
             self.stddev = float(variance ** 0.5)
-            
