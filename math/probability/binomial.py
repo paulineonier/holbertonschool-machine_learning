@@ -1,89 +1,64 @@
 #!/usr/bin/env python3
-"""Module that defines a Binomial distribution class"""
+"""Binomial distribution module"""
 
 
 class Binomial:
-    """Class representing a binomial distribution"""
+    """Represents a binomial distribution"""
 
     def __init__(self, data=None, n=1, p=0.5):
-        """
-        Initializes the binomial distribution
-
-        Args:
-            data (list): list of data to estimate the distribution
-            n (int): number of Bernoulli trials
-            p (float): probability of success
-
-        Raises:
-            TypeError: if data is not a list
-            ValueError: if data contains less than 2 values
-            ValueError: if n is not positive
-            ValueError: if p is not valid
-        """
-
-        # Case where data is not provided
+        """Initializes the binomial distribution"""
         if data is None:
             if n <= 0:
                 raise ValueError("n must be a positive value")
-
-            if p <= 0 or p >= 1:
+            if not 0 < p < 1:
                 raise ValueError("p must be greater than 0 and less than 1")
 
             self.n = int(n)
             self.p = float(p)
-
-        # Case where data is provided
         else:
-            if not isinstance(data, list):
+            if type(data) is not list:
                 raise TypeError("data must be a list")
-
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
 
-            # Calculate mean
             mean = sum(data) / len(data)
-
-            # Calculate variance
             variance = sum((x - mean) ** 2 for x in data) / len(data)
 
-            # Estimate p
             p = 1 - (variance / mean)
-
-            # Estimate n (rounded)
             n = round(mean / p)
-
-            # Recalculate p
-            p = mean / n
 
             self.n = int(n)
             self.p = float(p)
 
+    def factorial(self, x):
+        """Calculates factorial of x"""
+        if x == 0 or x == 1:
+            return 1
+        return x * self.factorial(x - 1)
+
     def pmf(self, k):
-        """
-        Calculates the PMF value for a given number of successes
-
-        Args:
-            k (int): number of successes
-
-        Returns:
-            float: the PMF value
-        """
-
-        # Convert k to integer
+        """Calculates PMF for k"""
         k = int(k)
-
-        # Check range
         if k < 0 or k > self.n:
             return 0
 
-        # Factorial function
-        def factorial(n):
-            if n == 0 or n == 1:
-                return 1
-            return n * factorial(n - 1)
+        comb = self.factorial(self.n) / (
+            self.factorial(k) * self.factorial(self.n - k)
+        )
 
-        # Compute combination
-        nCk = factorial(self.n) / (factorial(k) * factorial(self.n - k))
+        return comb * (self.p ** k) * ((1 - self.p) ** (self.n - k))
 
-        # Apply binomial formula
-        return nCk * (self.p ** k) * ((1 - self.p) ** (self.n - k))
+    def cdf(self, k):
+        """Calculates CDF for k"""
+        k = int(k)
+
+        if k < 0:
+            return 0
+        if k >= self.n:
+            return 1
+
+        cdf = 0
+        for i in range(k + 1):
+            cdf += self.pmf(i)
+
+        return cdf
