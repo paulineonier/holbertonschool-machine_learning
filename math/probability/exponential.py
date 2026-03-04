@@ -34,5 +34,5 @@ class Exponential:
     def cdf(self, x):
         """Calcul de la fonction de répartition (CDF) pour x"""
         if x < 0:
-                return 0
+            return 0
         return 1 - pow(2.7182818285, -self.lambtha * x)
