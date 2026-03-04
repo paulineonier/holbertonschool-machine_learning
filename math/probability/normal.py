@@ -84,3 +84,36 @@ class Normal:
 
         return (1 / (self.stddev * (2 * pi) ** 0.5)) * \
                (e ** (-0.5 * ((x - self.mean) / self.stddev) ** 2))
+
+    def cdf(self, x):
+        """
+        Calculates the CDF value for a given x
+
+        Args:
+            x (float): the x-value
+
+        Returns:
+            float: the CDF value
+        """
+        pi = 3.1415926536
+
+        # Calculate z-score
+        z = (x - self.mean) / (self.stddev * (2 ** 0.5))
+
+        # Approximation of erf (Abramowitz and Stegun formula)
+        t = 1 / (1 + 0.3275911 * abs(z))
+
+        a1 = 0.254829592
+        a2 = -0.284496736
+        a3 = 1.421413741
+        a4 = -1.453152027
+        a5 = 1.061405429
+
+        erf = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * \
+            (2.7182818285 ** (-z * z))
+
+        # Adjust sign
+        if z < 0:
+            erf = -erf
+
+        return 0.5 * (1 + erf)
