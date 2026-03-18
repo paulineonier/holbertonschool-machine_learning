@@ -30,7 +30,7 @@ def intersection(x, n, P, Pr):
         Intersection for each probability in P
     """
 
-    #  INPUT VALIDATION 
+    #  INPUT VALIDATION
     if not isinstance(n, int) or n <= 0:
         raise ValueError("n must be a positive integer")
 
@@ -57,16 +57,16 @@ def intersection(x, n, P, Pr):
     if not np.isclose(np.sum(Pr), 1):
         raise ValueError("Pr must sum to 1")
 
-    #  CALCUL DU COEFFICIENT BINOMIAL 
+    #  CALCUL DU COEFFICIENT BINOMIAL
     factorial = np.math.factorial
     coeff = factorial(n) / (
         factorial(x) * factorial(n - x)
     )
 
-    #  CALCUL DE LA LIKELIHOOD 
+    #  CALCUL DE LA LIKELIHOOD
     likelihoods = coeff * (P ** x) * ((1 - P) ** (n - x))
 
-    # INTERSECTION 
+    # INTERSECTION
     inters = likelihoods * Pr
 
     return inters
