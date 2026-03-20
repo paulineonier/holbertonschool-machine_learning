@@ -1,40 +1,75 @@
 #!/usr/bin/env python3
 """
-Module that calculates a correlation matrix from
-a covariance matrix.
+Module that defines a Multivariate Normal distribution.
 """
 
 import numpy as np
 
 
-def correlation(C):
+class MultiNormal:
     """
-    Calculates the correlation matrix from a covariance matrix.
-
-    Parameters
-    ----------
-    C : numpy.ndarray of shape (d, d)
-        Covariance matrix
-
-    Returns
-    -------
-    numpy.ndarray of shape (d, d)
-        Correlation matrix
+    Class that represents a Multivariate Normal distribution.
     """
 
-    if not isinstance(C, np.ndarray):
-        raise TypeError("C must be a numpy.ndarray")
+    def __init__(self, data):
+        """
+        Class constructor.
 
-    if C.ndim != 2 or C.shape[0] != C.shape[1]:
-        raise ValueError("C must be a 2D square matrix")
+        Parameters
+        ----------
+        data : numpy.ndarray of shape (d, n)
+            Dataset where d is the number of dimensions
+            and n is the number of data points
+        """
 
-    # STANDARD DEVIATIONS
-    std = np.sqrt(np.diag(C))
+        if not isinstance(data, np.ndarray) or data.ndim != 2:
+            raise TypeError("data must be a 2D numpy.ndarray")
 
-    # OUTER PRODUCT
-    std_matrix = np.outer(std, std)
+        d, n = data.shape
 
-    # CORRELATION MATRIX
-    corr = C / std_matrix
+        if n < 2:
+            raise ValueError(
+                "data must contain multiple data points"
+            )
 
-    return corr
+        self.mean = np.mean(data, axis=1, keepdims=True)
+        X_centered = data - self.mean
+        self.cov = (X_centered @ X_centered.T) / (n - 1)
+
+    def pdf(self, x):
+        """
+        Calculates the PDF at a given data point.
+
+        Parameters
+        ----------
+        x : numpy.ndarray of shape (d, 1)
+            Data point
+
+        Returns
+        -------
+        float
+            PDF value
+        """
+
+        if not isinstance(x, np.ndarray):
+            raise TypeError("x must be a numpy.ndarray")
+
+        d = self.mean.shape[0]
+
+        if x.shape != (d, 1):
+            raise ValueError(f"x must have the shape ({d}, 1)")
+
+        # CONSTANT TERM
+        det = np.linalg.det(self.cov)
+        inv = np.linalg.inv(self.cov)
+
+        norm_const = 1 / np.sqrt(((2 * np.pi) ** d) * det)
+
+        # EXPONENT
+        diff = x - self.mean
+        exponent = -0.5 * (diff.T @ inv @ diff)
+
+        # PDF
+        pdf_val = norm_const * np.exp(exponent)
+
+        return float(pdf_val)
