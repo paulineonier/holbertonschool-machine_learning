@@ -47,7 +47,7 @@ def kmeans(X, k, iterations=1000):
 
             # Assignment step
             # distances shape: (n, k)
-            distances = np.linalg.norm(X[:, np.newaxis] - C, axis=2)
+            distances = np.sqrt(np.sum((X[:, np.newaxis] - C) ** 2, axis=2))
             clss = np.argmin(distances, axis=1)
 
             new_C = np.copy(C)
