@@ -26,7 +26,7 @@ def expectation_maximization(X, k, iterations=1000,
     m : moyennes (k, d)
     S : covariances (k, d, d)
     g : responsabilités (k, n)
-    l : log likelihood final
+    L : log likelihood final
     """
 
     try:
@@ -43,7 +43,7 @@ def expectation_maximization(X, k, iterations=1000,
         pi, m, S = initialize(X, k)
 
         # Première expectation pour initialiser l
-        g, l = expectation(X, pi, m, S)
+        g, L = expectation(X, pi, m, S)
 
         # 🔁 SEULE boucle autorisée
         for i in range(iterations):
@@ -64,13 +64,13 @@ def expectation_maximization(X, k, iterations=1000,
                 return pi, m, S, g, new_l
 
             # Mise à jour du log likelihood
-            l = new_l
+            L = new_l
 
         # Affichage final si non déjà affiché
         if verbose:
-            print("Log Likelihood after {} iterations: {:.5f}".format(iterations, l))
+            print("Log Likelihood after {} iterations: {:.5f}".format(iterations, L))
 
-        return pi, m, S, g, l
+        return pi, m, S, g, L
 
     except Exception:
         return None, None, None, None, None

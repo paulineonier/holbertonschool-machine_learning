@@ -46,14 +46,14 @@ def BIC(X, kmin=1, kmax=None, iterations=1000,
 
         # Tableaux pour stocker résultats
         ks = kmax - kmin + 1
-        l = np.zeros(ks)  # log likelihoods
+        L = np.zeros(ks)  # log likelihoods
         b = np.zeros(ks)  # BIC
 
         best_bic = None
         best_k = None
         best_result = None
 
-        # 🔁 SEULE boucle autorisée
+        # SEULE boucle autorisée
         for i, k in enumerate(range(kmin, kmax + 1)):
 
             # EM pour ce nombre de clusters
@@ -77,7 +77,7 @@ def BIC(X, kmin=1, kmax=None, iterations=1000,
                 best_k = k
                 best_result = (pi, m, S)
 
-        return best_k, best_result, l, b
+        return best_k, best_result, L, b
 
     except Exception:
         return None, None, None, None
