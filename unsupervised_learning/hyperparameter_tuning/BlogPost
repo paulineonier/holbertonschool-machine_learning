@@ -1,0 +1,41 @@
+# Automated Machine Learning: Tuning Neural Networks with Bayesian Optimization and GPyOpt
+
+![Bayesian Optimization Workflow](https://raw.githubusercontent.com/your-username/your-repo-name/main/convergence_plot.png)
+
+When training deep neural networks, selecting the right hyperparameters often feels more like black magic than science. Should you use a learning rate of 0.001 or 0.0003? Is 64 units enough for a hidden layer, or do you need 256? 
+
+While techniques like **Grid Search** test combinations exhaustively and **Random Search** samples points blindly, **Bayesian Optimization** offers an intelligent, probabilistic approach that finds optimal parameters with significantly fewer function evaluations.
+
+> 📁 **Source Code:** You can access the complete implementation script and project files on my GitHub repository: [GitHub Repository - Hyperparameter Optimization with GPyOpt](https://github.com/your-username/your-repo-name).
+
+---
+
+## 1. What is a Gaussian Process (GP)?
+
+At the core of Bayesian Optimization lies the **Gaussian Process (GP)**. 
+
+A Gaussian Process is a non-parametric Bayesian regression technique. Instead of predicting a single scalar value for an unknown input $x$, a GP models a **probability distribution over functions**. 
+
+It provides two crucial outputs for any given parameter set:
+* **The Mean ($\mu$):** The predicted performance value.
+* **The Variance ($\sigma^2$):** The uncertainty or confidence bound of that prediction.
+
+Where data points have already been evaluated, the uncertainty drops to zero. In unexplored regions, uncertainty expands. This capability allows Bayesian Optimization to balance **exploration** (testing uncertain regions) and **exploitation** (focusing on promising regions).
+
+---
+
+## 2. What is Bayesian Optimization?
+
+Evaluating a deep learning model (e.g., training for dozens of epochs) is computationally expensive—a "black-box" function $f(x)$ with no closed-form derivative.
+
+Bayesian Optimization solves this using two main components:
+1. **Surrogate Model:** Usually a Gaussian Process that approximates the expensive black-box objective function.
+2. **Acquisition Function:** A mathematical utility function (such as *Expected Improvement* - EI) built upon the surrogate model to determine the single best point to sample next.
+
+```text
++-------------------------------------------------------+
+|  1. Sample candidate hyperparameter set x_next         |
+|  2. Train model and evaluate metric y_next            |
+|  3. Update Gaussian Process with (x_next, y_next)     |
+|  4. Recalculate Acquisition Function for next trial   |
++-------------------------------------------------------+
