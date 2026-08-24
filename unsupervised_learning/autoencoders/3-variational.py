@@ -50,22 +50,24 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
     decoder = keras.Model(latent_inputs, outputs, name='decoder')
 
     # --- Autoencoder (Combined) ---
-    auto_outputs = decoder(encoder(inputs)[0])
+    z_sampled, mean, log_sig = encoder(inputs)
+    auto_outputs = decoder(z_sampled)
     auto = keras.Model(inputs, auto_outputs, name='autoencoder')
 
-    # Custom VAE Loss Function passed to compile
-    def vae_loss(x_in, x_out):
-        """Calculates total VAE loss combining reconst' and KL divergence."""
-        recon_loss = keras.losses.binary_crossentropy(x_in, x_out)
-        recon_loss = keras.backend.sum(recon_loss, axis=-1)
+    # Reconstruction Loss
+    recon_loss = keras.losses.binary_crossentropy(inputs, auto_outputs)
+    recon_loss = keras.backend.sum(recon_loss, axis=-1)
 
-        kl_loss = -0.5 * keras.backend.sum(
-            1 + z_log_sig - keras.backend.square(z_mean) -
-            keras.backend.exp(z_log_sig),
-            axis=-1
-        )
-        return keras.backend.mean(recon_loss + kl_loss)
+    # KL Divergence Loss
+    kl_loss = -0.5 * keras.backend.sum(
+        1 + log_sig - keras.backend.square(mean) -
+        keras.backend.exp(log_sig),
+        axis=-1
+    )
 
-    auto.compile(optimizer='adam', loss=vae_loss)
+    vae_loss = keras.backend.mean(recon_loss + kl_loss)
+    auto.add_loss(vae_loss)
+
+    auto.compile(optimizer='adam')
 
     return encoder, decoder, auto
