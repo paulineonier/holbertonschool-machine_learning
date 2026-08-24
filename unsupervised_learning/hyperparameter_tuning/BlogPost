@@ -1,10 +1,10 @@
 # Automated Machine Learning: Tuning Neural Networks with Bayesian Optimization and GPyOpt
 
-![Bayesian Optimization Workflow](https://github.com/paulineonier/holbertonschool-machine_learning/blob/main/unsupervised_learning/hyperparameter_tuning/6-bayes_opt.py)
-
 When training deep neural networks, selecting the right hyperparameters often feels more like black magic than science. Should you use a learning rate of 0.001 or 0.0003? Is 64 units enough for a hidden layer, or do you need 256? 
 
 While techniques like **Grid Search** test combinations exhaustively and **Random Search** samples points blindly, **Bayesian Optimization** offers an intelligent, probabilistic approach that finds optimal parameters with significantly fewer function evaluations.
+
+In this blog post, I describe my complete approach to automated hyperparameter optimization using **GPyOpt** and **TensorFlow/Keras**.
 
 > 📁 **Source Code:** You can access the complete implementation script and project files on my GitHub repository: [GitHub Repository - Hyperparameter Optimization with GPyOpt](https://github.com/your-username/your-repo-name).
 
@@ -14,28 +14,112 @@ While techniques like **Grid Search** test combinations exhaustively and **Rando
 
 At the core of Bayesian Optimization lies the **Gaussian Process (GP)**. 
 
-A Gaussian Process is a non-parametric Bayesian regression technique. Instead of predicting a single scalar value for an unknown input $x$, a GP models a **probability distribution over functions**. 
+A Gaussian Process is a non-parametric Bayesian regression technique. Instead of predicting a single scalar output $y$ for a given input vector $x$, a GP models a **probability distribution over functions**:
 
-It provides two crucial outputs for any given parameter set:
-* **The Mean ($\mu$):** The predicted performance value.
-* **The Variance ($\sigma^2$):** The uncertainty or confidence bound of that prediction.
+$$f(x) \sim \mathcal{GP}(m(x), k(x, x'))$$
 
-Where data points have already been evaluated, the uncertainty drops to zero. In unexplored regions, uncertainty expands. This capability allows Bayesian Optimization to balance **exploration** (testing uncertain regions) and **exploitation** (focusing on promising regions).
+where:
+* $m(x)$ is the mean function (often assumed to be 0).
+* $k(x, x')$ is the covariance/kernel function (such as the Radial Basis Function or Matérn kernel).
+
+### Concrete Example
+Imagine evaluating a function at two points, $x_1 = 0.2$ and $x_2 = 0.8$, obtaining accuracy scores of $0.85$ and $0.90$. A Gaussian Process calculates two things for any new unobserved point $x^*$:
+1. **The Predicted Mean ($\mu(x^*)$):** The expected accuracy value.
+2. **The Uncertainty/Variance ($\sigma^2(x^*)$):** The standard deviation or confidence range around that prediction.
+
+At points $x_1$ and $x_2$, the uncertainty drops to zero. Far away from these observed points, the variance grows. This capability allows Bayesian Optimization to balance **exploration** (testing uncertain regions) and **exploitation** (focusing on promising regions).
 
 ---
 
 ## 2. What is Bayesian Optimization?
 
-Evaluating a deep learning model (e.g., training for dozens of epochs) is computationally expensive—a "black-box" function $f(x)$ with no closed-form derivative.
+Evaluating a deep learning model (e.g., training for dozens of epochs) is computationally expensive—it acts as a "black-box" function $f(x)$ with no closed-form derivative.
 
 Bayesian Optimization solves this using two main components:
-1. **Surrogate Model:** Usually a Gaussian Process that approximates the expensive black-box objective function.
-2. **Acquisition Function:** A mathematical utility function (such as *Expected Improvement* - EI) built upon the surrogate model to determine the single best point to sample next.
+1. **Surrogate Model:** A Gaussian Process that approximates the expensive black-box objective function $f(x)$.
+2. **Acquisition Function:** A mathematical utility function (such as *Expected Improvement* - EI) built upon the GP output to determine the next best hyperparameter combination to evaluate.
 
-```text
-+-------------------------------------------------------+
-|  1. Sample candidate hyperparameter set x_next         |
-|  2. Train model and evaluate metric y_next            |
-|  3. Update Gaussian Process with (x_next, y_next)     |
-|  4. Recalculate Acquisition Function for next trial   |
-+-------------------------------------------------------+
+### The Algorithm Loop
+
+1. Fit Gaussian Process to all evaluated $(X, Y)$ points.
+2. Compute Acquisition Function over search domain.
+3. Pick $x_{next}$ where Acquisition Function is maximized.
+4. Train model with $x_{next}$ to measure $y_{next}$.
+5. Add $(x_{next}, y_{next})$ to dataset and repeat.
+
+### Acquisition Function Example: Expected Improvement (EI)
+EI quantifies the expected amount of improvement over the current best score $f(x^+)$:
+
+$$\text{EI}(x) = (\mu(x) - f(x^+) - \xi) \Phi(Z) + \sigma(x) \phi(Z)$$
+
+where $Z = \frac{\mu(x) - f(x^+) - \xi}{\sigma(x)}$, $\Phi$ is the cumulative distribution function of the standard normal distribution, and $\phi$ is its probability density function.
+
+---
+
+## 3. The Particular Model Chosen for Optimization
+
+I selected a **Multi-Layer Perceptron (MLP) Neural Network** trained on the **MNIST** handwritten digit classification dataset. 
+
+### Model Architecture
+* **Input Layer:** Flattened $28 \times 28$ pixel images ($784$ features).
+* **Dense Hidden Layer:** Variable number of units with ReLU activation and $L_2$ weight regularization.
+* **Dropout Layer:** Variable dropout rate for regularization.
+* **Output Layer:** Dense layer with $10$ units and Softmax activation.
+
+This model was chosen because it is complex enough to exhibit sensitivity to hyperparameter choices (such as overfitting or slow convergence), while remaining fast enough to evaluate within 30 optimization iterations.
+
+---
+
+## 4. Hyperparameter Choices and Rationale
+
+I configured **GPyOpt** to optimize 5 key hyperparameters:
+
+| Hyperparameter | Type | Search Domain |
+|---|---|---|
+| **Learning Rate** | Continuous | $[10^{-4}, 10^{-2}]$ |
+| **Number of Units** | Discrete | $\{32, 64, 128, 256\}$ |
+| **Dropout Rate** | Continuous | $[0.1, 0.5]$ |
+| **$L_2$ Regularization Weight** | Continuous | $[10^{-5}, 10^{-2}]$ |
+| **Batch Size** | Discrete | $\{32, 64, 128\}$ |
+
+### Reasons for Selecting These Hyperparameters
+* **Learning Rate ($\eta$):** The most critical hyperparameter in gradient descent algorithms (Adam). Setting it too high leads to gradient explosion or oscillation, while setting it too low results in extremely slow convergence.
+* **Number of Hidden Units:** Directly controls model capacity and expressive power.
+* **Dropout Rate & $L_2$ Regularization:** Both serve as complementary regularization mechanisms to prevent overfitting on the training set. Tuning them together ensures the network generalizes well to validation data.
+* **Batch Size:** Dictates gradient noise and training throughput. Smaller batch sizes offer stochastic regularization effects, whereas larger batch sizes stabilize gradient steps.
+
+---
+
+## 5. The Satisficing Metric Choice and Rationale
+
+### Selected Metric: Maximum Validation Accuracy
+In machine learning design, metrics are split into **Optimizing Metrics** (the main goal we want to maximize/minimize) and **Satisficing Metrics** (constraints that must meet a minimum threshold).
+
+In this setup, **Validation Accuracy** was selected as the satisficing target metric because:
+* It directly evaluates how well the neural network generalizes to unseen data.
+* Training loss or training accuracy can be misleading due to potential overfitting.
+
+### Optimization Formatting
+Because **GPyOpt** minimizes functions by default, the objective function returned the negative validation accuracy:
+
+$$\text{Objective}(x) = -1 \times \text{Validation Accuracy}(x)$$
+
+Minimizing $-0.96$ is mathematically equivalent to maximizing $+0.96$.
+
+---
+
+## 6. Reasoning Behind Other Approach Choices
+
+### Early Stopping
+Training every candidate hyperparameter set for a fixed 15 or 50 epochs is computationally wasteful. I added `tf.keras.callbacks.EarlyStopping`:
+* **Patience:** 3 epochs monitoring `val_accuracy`.
+* **Behavior:** Halts training early if validation performance stagnates, saving valuable GPU/CPU time for subsequent optimization iterations.
+
+### Dynamic Checkpoint Naming
+To satisfy the requirement of saving the best model iteration per session with the hyperparameter values in the filename, I implemented a dynamic callback path:
+
+```python
+chkpt_filename = (
+    f"model_lr{lr:.5f}_units{num_units}_drop{dropout:.2f}_"
+    f"l2{l2_weight:.5f}_bs{batch_sz}.h5"
+)
