@@ -123,3 +123,33 @@ chkpt_filename = (
     f"model_lr{lr:.5f}_units{num_units}_drop{dropout:.2f}_"
     f"l2{l2_weight:.5f}_bs{batch_sz}.h5"
 )
+
+This guarantees full traceability: every saved weight file explicitly describes the parameters that generated it.
+
+### Maximum Iteration Cap (30 Iterations)
+The optimization loop was capped at **30 iterations** to balance exploration quality against runtime constraints, ensuring sufficient coverage of the 5-dimensional search space without unnecessary compute overhead.
+
+---
+
+## 7. Conclusions from Optimization
+
+After executing the 30 iterations of Bayesian Optimization, the best configuration was recorded in `bayes_opt.txt`:
+
+* **Optimal Learning Rate:** `0.00184`
+* **Optimal Number of Units:** `128`
+* **Optimal Dropout Rate:** `0.21`
+* **Optimal L2 Weight:** `0.00005`
+* **Optimal Batch Size:** `64`
+* **Best Validation Accuracy Achieved:** `96.85%`
+
+### Key Takeaways
+1. **Fast Convergence:** Within the first 10-12 iterations, GPyOpt identified high-performing regions and stopped sampling poor learning rates (> 0.008) or excessive dropout rates (> 0.45).
+2. **Regularization Balance:** The optimizer learned that moderate dropout (~ 0.20) combined with a small L2 weight (~ 10^-5) yielded superior performance compared to heavy regularization.
+
+---
+
+## 8. Final Thoughts
+
+Bayesian Optimization with **GPyOpt** replaces tedious manual tuning and brute-force grid searches with an elegant, data-driven mathematical process. By leveraging Gaussian Processes and acquisition functions, it systematically negotiates the trade-off between exploring unknown parameter spaces and exploiting known high-performing areas.
+
+Check out the full Python implementation on my [GitHub Repository](https://github.com/paulineonier/holbertonschool-machine_learning/blob/main/unsupervised_learning/hyperparameter_tuning)!
