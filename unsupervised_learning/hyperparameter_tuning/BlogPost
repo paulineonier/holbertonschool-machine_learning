@@ -6,7 +6,7 @@ While techniques like **Grid Search** test combinations exhaustively and **Rando
 
 In this blog post, I describe my complete approach to automated hyperparameter optimization using **GPyOpt** and **TensorFlow/Keras**.
 
-> 📁 **Source Code:** You can access the complete implementation script and project files on my GitHub repository: [GitHub Repository - Hyperparameter Optimization with GPyOpt](https://github.com/your-username/your-repo-name).
+> 📁 **Source Code:** You can access the complete implementation script and project files on my GitHub repository: [GitHub Repository - Hyperparameter Optimization with GPyOpt](https://github.com/paulineonier/holbertonschool-machine_learning/blob/main/unsupervised_learning/hyperparameter_tuning/6-bayes_opt.py).
 
 ---
 
