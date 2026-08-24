@@ -1,6 +1,6 @@
 # Automated Machine Learning: Tuning Neural Networks with Bayesian Optimization and GPyOpt
 
-![Bayesian Optimization Workflow](https://raw.githubusercontent.com/your-username/your-repo-name/main/convergence_plot.png)
+![Bayesian Optimization Workflow](https://github.com/paulineonier/holbertonschool-machine_learning/blob/main/unsupervised_learning/hyperparameter_tuning/6-bayes_opt.py)
 
 When training deep neural networks, selecting the right hyperparameters often feels more like black magic than science. Should you use a learning rate of 0.001 or 0.0003? Is 64 units enough for a hidden layer, or do you need 256? 
 
