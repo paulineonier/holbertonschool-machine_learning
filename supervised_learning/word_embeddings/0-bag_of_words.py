@@ -16,14 +16,15 @@ def bag_of_words(sentences, vocab=None):
         - embeddings: numpy.ndarray de forme (s, f) avec le décompte des mots.
         - features: liste des mots clés utilisés pour les colonnes.
     """
-    # Étape 1 : Nettoyage et tokenisation des phrases (mots uniquement)
     cleaned_sentences = []
+
     for s in sentences:
-        # Extraire tous les mots alphanumériques et retirer les 's possessifs
-        tokens = re.findall(r"\b[a-zA-Z0-9]+\b", s.lower())
+        # Nettoyage : suppression du 's possessif et de la ponctuation
+        s_clean = re.sub(r"'s\b", "", s.lower())
+        tokens = re.findall(r"\b\w+\b", s_clean)
         cleaned_sentences.append(tokens)
 
-    # Étape 2 : Construction du vocabulaire si non fourni
+    # Définition des features
     if vocab is None:
         features = set()
         for tokens in cleaned_sentences:
@@ -32,7 +33,7 @@ def bag_of_words(sentences, vocab=None):
     else:
         features = vocab
 
-    # Étape 3 : Remplissage de la matrice de comptage
+    # Construction de la matrice
     s = len(sentences)
     f = len(features)
     embeddings = np.zeros((s, f), dtype=int)
