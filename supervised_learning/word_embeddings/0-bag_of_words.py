@@ -14,34 +14,36 @@ def bag_of_words(sentences, vocab=None):
     Returns:
     tuple: (embeddings, features)
         - embeddings: numpy.ndarray de forme (s, f) avec le décompte des mots.
-        - features: liste des mots clés utilisés pour les colonnes.
+        - features: list des mots clés utilisés pour les colonnes.
     """
     cleaned_sentences = []
 
     for s in sentences:
-        # Nettoyage : suppression du 's possessif et de la ponctuation
+        # Nettoyage : suppression des apostrophes et ponctuations
         s_clean = re.sub(r"'s\b", "", s.lower())
         tokens = re.findall(r"\b\w+\b", s_clean)
         cleaned_sentences.append(tokens)
 
     # Définition des features
     if vocab is None:
-        features = set()
+        features_set = set()
         for tokens in cleaned_sentences:
-            features.update(tokens)
-        features = sorted(list(features))
+            features_set.update(tokens)
+        features = sorted(list(features_set))
     else:
         features = vocab
 
-    # Construction de la matrice
-    s = len(sentences)
-    f = len(features)
-    embeddings = np.zeros((s, f), dtype=int)
+    s_len = len(sentences)
+    f_len = len(features)
+    embeddings = np.zeros((s_len, f_len), dtype=int)
+
+    # Dictionnaire de correspondance rapide mot -> index
+    feat_dict = {word: i for i, word in enumerate(features)}
 
     for i, tokens in enumerate(cleaned_sentences):
         for token in tokens:
-            if token in features:
-                j = features.index(token)
+            if token in feat_dict:
+                j = feat_dict[token]
                 embeddings[i, j] += 1
 
     return embeddings, features
