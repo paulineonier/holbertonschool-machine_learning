@@ -18,7 +18,7 @@ def uni_bleu(references, sentence):
     if c == 0:
         return 0.0
 
-    # 1. Calcul des fréquences max tronquées (Clipped Counts) pour les unigrammes
+    # 1. Calcul des Clipped Counts pour les unigrammes
     words_count = {}
     for word in sentence:
         words_count[word] = words_count.get(word, 0) + 1
@@ -34,7 +34,7 @@ def uni_bleu(references, sentence):
 
     # 2. Recherche de la longueur de référence la plus proche (r)
     ref_lens = [len(ref) for ref in references]
-    # Tri par différence absolue, puis par la longueur minimale en cas d'égalité
+    # Tri par différence absolue, & par la longueur minimale en cas d'égalité
     r = min(ref_lens, key=lambda ref_len: (abs(ref_len - c), ref_len))
 
     # 3. Calcul de la pénalité de brièveté (Brevity Penalty - BP)
